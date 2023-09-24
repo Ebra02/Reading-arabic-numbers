@@ -2,7 +2,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-import nnfs  # Assuming this is your neural network library (not included here)
+import nnfs  
 
 np.random.seed(20)
 # Define the Layer class
@@ -98,7 +98,7 @@ def build_neural_network():
     best_weights2 = None
     best_biases2 = None
 
-    for iteration in range(1000):
+    for iteration in range(10000):
         # Shuffle the dataset and split it into mini-batches
         indices = np.arange(len(X))
         np.random.shuffle(indices)
