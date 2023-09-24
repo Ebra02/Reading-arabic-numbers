@@ -4,11 +4,12 @@ import numpy as np
 import math
 import nnfs  # Assuming this is your neural network library (not included here)
 
+np.random.seed(20)
 # Define the Layer class
 class Layer:
     def __init__(self, n_inputs, n_neurons):
         # Initialize weights and biases
-        self.weights = 0.1 * np.random.randn(n_inputs, n_neurons)
+        self.weights = 0.01 * np.random.randn(n_inputs, n_neurons)
         self.biases = np.zeros((1, n_neurons))
         self.output = None
 
@@ -56,10 +57,10 @@ def load_arabic_data():
     y = []
     X = []
 
-    for digit in range(10):
+    for digit in range(2):
         path = path_init + "//" + str(digit)
         dir_list = os.listdir(path)
-        c = 0
+        print(path)
 
         for imageFile in dir_list:
             img = plt.imread(path + "//" + imageFile)
@@ -67,9 +68,7 @@ def load_arabic_data():
             flat_arr = arr.ravel()
             X.append(flat_arr)
             y.append(digit)
-            c += 1
-            if c > 100:
-                break
+            
 
     return np.array(X, dtype=float), np.array(y, dtype=int)  # Change this line
 
@@ -82,9 +81,15 @@ def build_neural_network():
     layer1 = Layer(784, 784)  # Adjust the input size and output size
     layer2 = Layer(784, 10)   # Adjust the input size and output size
 
+    # Initialize weights and biases for both layers once at the beginning
+    layer1.weights = 0.01 * np.random.randn(784, 784)
+    layer1.biases = np.zeros((1, 784))
+    layer2.weights = 0.01 * np.random.randn(784, 10)
+    layer2.biases = np.zeros((1, 10))
+
     # Define batch size and initial learning rate
     batch_size = 32
-    initial_learning_rate = 0.1
+    initial_learning_rate = 0.01
 
     # Training loop
     lowest_loss = float('inf')  # Set an initial high loss value
@@ -93,7 +98,7 @@ def build_neural_network():
     best_weights2 = None
     best_biases2 = None
 
-    for iteration in range(2000):
+    for iteration in range(1000):
         # Shuffle the dataset and split it into mini-batches
         indices = np.arange(len(X))
         np.random.shuffle(indices)
@@ -106,10 +111,10 @@ def build_neural_network():
             y_batch = y_shuffled[i:i+batch_size]
 
             # Update weights with small random values
-            layer1.weights += 0.05 * np.random.randn(784, 784)
-            layer1.biases += 0.05 * np.random.randn(1, 784)
-            layer2.weights += 0.05 * np.random.randn(784, 10)
-            layer2.biases += 0.05 * np.random.randn(1, 10)
+            layer1.weights += initial_learning_rate * np.random.randn(784, 784)
+            layer1.biases += initial_learning_rate * np.random.randn(1, 784)
+            layer2.weights += initial_learning_rate * np.random.randn(784, 10)
+            layer2.biases += initial_learning_rate * np.random.randn(1, 10)
 
             # Forward pass
             layer1.forward(X_batch)
@@ -145,8 +150,6 @@ def build_neural_network():
 
 # Main function
 def main():
-    # Load Arabic numeral dataset
-    X_arabic, y_arabic = load_arabic_data()
 
     # Train your neural network
     build_neural_network()
