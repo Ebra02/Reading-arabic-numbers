@@ -5,11 +5,11 @@ import math
 import nnfs
 from sklearn.utils import shuffle
 
-# Set the random seed for reproducibility
-np.random.seed(42)
+# random seed for reproducibility
+np.random.seed(30)
 nnfs.init()
 
-# Define the Layer class
+# Layer class
 class Layer:
     def __init__(self, n_inputs, n_neurons):
         self.weights = 0.01 * np.random.randn(n_inputs, n_neurons)
@@ -30,7 +30,7 @@ class Layer:
         probabilities = exp_values / np.sum(exp_values, axis=1, keepdims=True)
         self.output = probabilities
 
-# Define the cross-entropy loss function
+# cross-entropy loss function
 def cross_entropy_loss(predictions, targets):
     epsilon = 1e-15
     predictions = np.clip(predictions, epsilon, 1 - epsilon)
@@ -38,7 +38,7 @@ def cross_entropy_loss(predictions, targets):
     ce_loss = -np.sum(np.log(predictions[np.arange(N), targets])) / N
     return ce_loss
 
-# Define the accuracy calculation function
+# accuracy calculation function
 def calculate_accuracy(predictions, targets):
     predicted_labels = np.argmax(predictions, axis=1)
     correct_predictions = np.sum(predicted_labels == targets)
@@ -65,20 +65,20 @@ def load_arabic_data():
 
     return np.array(X, dtype=float), np.array(y, dtype=int)
 
-# Define your neural network architecture
+# neural network architecture
 def build_neural_network():
     X, y = load_arabic_data()
 
-    # Shuffle the dataset
+    # Shuffle the dataset if needed
     X, y = shuffle(X, y, random_state=42)
 
     # Create Dense layers with appropriate input and output sizes
     layer1 = Layer(784, 784)
     layer2 = Layer(784, 10)
 
-    # Define batch size and initial learning rate
+    # batch size and initial learning rate
     batch_size = 32
-    initial_learning_rate = 0.005
+    initial_learning_rate = 0.01
 
     # Training loop
     lowest_loss = float('inf')
@@ -87,12 +87,12 @@ def build_neural_network():
     best_weights2 = None
     best_biases2 = None
 
-    for iteration in range(2000):
+    for iteration in range(500):
         for i in range(0, len(X), batch_size):
             X_batch = X[i:i+batch_size]
             y_batch = y[i:i+batch_size]
 
-            # Set the random seed before updating weights
+            # random seed before updating weights
             np.random.seed(iteration + i)
 
             layer1.weights += initial_learning_rate * np.random.randn(784, 784)
